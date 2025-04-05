@@ -83,8 +83,8 @@ Set the robot mode to `STAND`:
 ros2 topic pub /robot1/robot_mode quadropted_msgs/msg/RobotModeCommand "{mode: 'STAND', robot_id: 1}" --once
 ```
 
-### Verify Smoother Server
-Ensure the `smoother_server` service is running. If not, check the logs or restart the launch file.
+### Verify Smoother Server and Teleop Twist Keyboard
+Ensure the `smoother_server` and `/teleop_twist_keyboard` services are running. If not, check the logs or restart the launch file.
 
 ### Controlling the Robot
 Use teleop to control the robot:
