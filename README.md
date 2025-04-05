@@ -1,7 +1,5 @@
 # Unitree go2, go1 simulation in Gazebo Sim
 
-![Robot Simulation](images/robot_simulation.png)
-![Robot Walking](images/robot_walking.png)
 
 This repository allows you to run dog robots in the GAZEBO simulator. The robot can walk, rotate with 12 degrees of freedom, and features a `robot_msgs` interface. The robot moves using inverse kinematics, and its odometry is based on direct kinematics. Additionally, all functionalities are developed in Python.
 
@@ -79,6 +77,7 @@ To launch the Gazebo simulation with multiple robots:
 ```bash
 ros2 launch gazebo_sim gazebo_multi_nav2_world.launch.py
 ```
+![Robot Walking](./media/move1.gif)
 
 ### Publish Initial Robot Mode
 Set the robot mode to `STAND`:
