@@ -33,7 +33,7 @@ rosdep install --from-paths src --ignore-src -r -y
 Before running the simulation, export the path to your Gazebo models:
 
 ```bash
-export GZ_SIM_RESOURCE_PATH=~/go_sim/gazebo_sim/models
+export GZ_SIM_RESOURCE_PATH=/home/$USER/go_sim/gazebo_sim/models
 ```
 (Replace with the correct path to your models.)
 
@@ -41,7 +41,7 @@ export GZ_SIM_RESOURCE_PATH=~/go_sim/gazebo_sim/models
 
 To support multiple topics, configure CycloneDDS by creating a configuration file (e.g., cyclonedds.xml) with the following content:
 
-```bash
+```xml
 <CycloneDDS>
   <Domain>
     <General>
@@ -60,116 +60,89 @@ To support multiple topics, configure CycloneDDS by creating a configuration fil
 Then, set the environment variable to point to this file:
 
 ```bash
-export CYCLONEDDS_URI=file://path_to_cyclonedds.xml
+export CYCLONEDDS_URI=file:///home/$USER/go_sim/cyclonedds.xml
 ```
-
-(Replace `path_to_cyclonedds.xml` with the actual file path.)
 
 ## Running the Simulation
 
+### Source the Workspace
+Before running any commands, source the workspace:
 ```bash
-#Navigate to the project directory:
-
-cd ~/go_sim
-
-#Source the environment setup:
-
-source install/local_setup.bash
-
-#Launch the simulation:
-
-ros2 launch gazebo_sim launch.py
+source install/setup.bash
 ```
 
-## Controlling the Robot
-
-### Moving the Robot
-
-The robot moves by publishing velocity commands to the `<robot_namespace>/cmd_vel` topic. By default, the robot is named robot1.
-
-Example using `teleop_twist_keyboard`:
-
+### Launch the Simulation
+To launch the Gazebo simulation with multiple robots:
 ```bash
-source install/local_setup.bash
-ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/robot1/cmd_vel
+ros2 launch gazebo_sim gazebo_multi_nav2_world.launch.py
 ```
 
-
-![](./media/robot_move.gif)
-
-Robot Modes
-
-The robot supports several modes:
-
-    REST – Default position in which the robot cannot move.
-    STAND – Mode in which the robot can rotate in place.
-    TROT – Walking mode.
-
-The robot operates with 12 degrees of freedom. To enable rotation, switch the mode to "STAND" by publishing to the robot_mode topic.
-
-Example (for a robot with namespace `robot1`):
-
+### Publish Initial Robot Mode
+Set the robot mode to `STAND`:
 ```bash
-ros2 topic pub /robot1/robot_mode quadropted_msgs/msg/RobotModeCommand "{mode: 'STAND', robot_id: 1}"
+ros2 topic pub /robot1/robot_mode quadropted_msgs/msg/RobotModeCommand "{mode: 'STAND', robot_id: 1}" --once
 ```
 
-After switching modes, control the robot using velocity commands:
+### Verify Smoother Server
+Ensure the `smoother_server` service is running. If not, check the logs or restart the launch file.
 
+### Controlling the Robot
+Use teleop to control the robot:
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/robot1/cmd_vel
 ```
 
-
-![](./media/move1.gif)
-
-### Changing Robot Behavior
-
-The robot can sit and stand using the `robot_behavior_command` service.
-
-Example command:
-
+### Verify Teleop Node
+Before controlling the robot, ensure the teleop node is running. Check the list of active nodes:
 ```bash
-ros2 service call /robot1/robot_behavior_command quadropted_msgs/srv/RobotBehaviorCommand "{command: 'walk'}"
+ros2 node list
 ```
-
-Possible commands:
-
-    walk – The robot stands up (REST) and can walk (TROT).
-    up – The robot stands up (REST) and locks movement.
-    sit – The robot sits down (STAND).
-
-![](./media/sitUp.gif)
+Look for a node named `teleop_twist_keyboard`. If it is not running, start it:
+```bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/robot1/cmd_vel
+```
 
 ## Multi-Robot Setup and Model Switching
 
 ### Changing Robot Models
+You can change between robot models (e.g., go2, go1) in `gazebo_multi_nav2_world.launch.py` file at line 102:
 
-You can change between robot models (e.g., go2, go1) in gazebo_multi_nav2_world.launch.py file 102 str:
+For go2: use `go2_description`
+For go1: use `go1_description`
 
-![](./media/switch.png)
+### Running Multiple Robots Simultaneously
+The repository supports simultaneous operation of multiple robots. Each robot has access to nav2. In the `robot.config` file, add the robot’s namespace and spawn coordinates in the world.
 
-for go2: use "go2_description" 
-for go1: use "go1_description"
+## Preparing to Push to Forked Repository
 
-Running Multiple Robots Simultaneously
-![](./media/go1multi.png)
-![](./media/go2multi.png)
-### The repository supports simultaneous operation of multiple robots. Each robot has access to nav2. In the robot.config file, add the robot’s namespace and spawn coordinates in the world.
-![](./media/robot_config.png)
+### Add Remote Repository
+Ensure your forked repository is added as a remote:
+```bash
+git remote add origin <your-forked-repo-url>
+```
 
-### NAV2 work demonstration: 
-![](./media/robot-nav2.gif)
+### Commit Changes
+Stage and commit your changes:
+```bash
+git add .
+git commit -m "Updated simulation setup and documentation"
+```
 
+### Push to Forked Repository
+Push the changes to your forked repository:
+```bash
+git push origin main
+```
 
-## Credits, thaks for all
+## Credits
 
-    mike4192: (SpotMicro)[https://github.com/mike4192/spotMicro]
-    Unitree Robotics: (A1 ROS)[https://github.com/unitreerobotics/a1_ros]
-    QUADRUPED ROBOTICS: (Quadruped)[https://quadruped.de]
-    lnotspotl: (GitHub)[https://github.com/lnotspotl]
-    anujjain-dev: (Unitree-go2 ROS2)[https://github.com/anujjain-dev/unitree-go2-ros2]
+- mike4192: [SpotMicro](https://github.com/mike4192/spotMicro)
+- Unitree Robotics: [A1 ROS](https://github.com/unitreerobotics/a1_ros)
+- QUADRUPED ROBOTICS: [Quadruped](https://quadruped.de)
+- lnotspotl: [GitHub](https://github.com/lnotspotl)
+- anujjain-dev: [Unitree-go2 ROS2](https://github.com/anujjain-dev/unitree-go2-ros2)
 
 ## TODO
 
-    Add Gazebo Classic support (physics and inertial parameters for URDF).
-    Perform odometry calibration 
+- Add Gazebo Classic support (physics and inertial parameters for URDF).
+- Perform odometry calibration

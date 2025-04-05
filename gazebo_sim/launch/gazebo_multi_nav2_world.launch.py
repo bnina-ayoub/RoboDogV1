@@ -293,6 +293,16 @@ def generate_launch_description():
             {'use_sim_time': use_sim_time}],
             remappings=remappings)
 
+        smoother_server = Node(
+            package='nav2_smoother',
+            executable='smoother_server',
+            namespace=namespace,
+            name='smoother_server',
+            output='screen',
+            parameters=[{
+                'use_sim_time': use_sim_time
+            }]
+        )
 
         robot_control = GroupAction([
             SetRemap(src="/tf", dst="tf"),
@@ -324,7 +334,8 @@ def generate_launch_description():
             robot_control,
             nav2_actions,
             rviz,
-            test_action
+            test_action,
+            smoother_server
         ])
 
         if last_action is None:

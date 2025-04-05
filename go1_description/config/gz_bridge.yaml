@@ -3,3 +3,45 @@
   ros_type_name: "rosgraph_msgs/msg/Clock"
   gz_type_name: "gz.msgs.Clock"
   direction: GZ_TO_ROS
+
+# Robot command topics
+- ros_topic_name: "/robot1/cmd_vel"
+  gz_topic_name: "/model/go2/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: ROS_TO_GZ
+
+# Mode topic with string message (easier to bridge with Gazebo)
+- ros_topic_name: "/robot1/mode"
+  gz_topic_name: "/model/go2/mode"
+  ros_type_name: "std_msgs/msg/String"
+  gz_type_name: "gz.msgs.StringMsg"
+  direction: BIDIRECTIONAL
+
+# Joint states for robot visualization
+- ros_topic_name: "/robot1/joint_states"
+  gz_topic_name: "/model/go2/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+
+# TF transform
+- ros_topic_name: "/tf"
+  gz_topic_name: "/model/go2/tf"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+# IMU data
+- ros_topic_name: "/robot1/imu"
+  gz_topic_name: "/model/go2/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+
+# Odometry for navigation
+- ros_topic_name: "/robot1/odom"
+  gz_topic_name: "/model/go2/odometry"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
