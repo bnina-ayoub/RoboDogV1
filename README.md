@@ -110,6 +110,16 @@ source install/local_setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/robot1/cmd_vel
 ```
 
+#### Using PS5 Controller
+
+To control the robot using a PS5 controller:
+
+```bash
+ros2 launch ps5_controller ps5_controller.launch.py
+```
+
+This allows you to use a PlayStation 5 controller to navigate the robot in the simulation.
+
 
 ![](./media/robot_move.gif)
 
